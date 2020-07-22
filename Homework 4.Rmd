@@ -1,0 +1,169 @@
+---
+title: "Homework 4"
+author: "Anders Julin"
+date: "4/13/2020"
+output: html_document
+---
+
+##Problem 5.4
+```{r}
+library(car)
+library(readxl)
+hw41<-read_excel("C:/Users/SEATT_000/Documents/UMD Classes/Spring 2020/BMGT430/Homework/HW 4/COMPREP5.xlsx", col_names = TRUE)
+attach(hw41)
+fit41<-lm(TIME~EXPER+NUMBER)
+summary(fit41)
+```
+</br>Original Equation: TIME=-179.288+10.189EXPER+32.969NUMBER
+</br>pvalue of EXPER is very high, want to test to see if it can be removed.
+</br>$H{_0}$:EXPER$(\beta_1)$=0 </br>
+$H{_1}$: EXPER$(\beta_1)$s is not equal to 0 </br></br>
+```{r}
+anova(fit41)
+```
+</br> Test Statistic: $F_{1:27}$=1.4002
+```{r}
+1-pf(1.4002,1,27)
+```
+</br> p-value=.2470046
+</br>$\alpha$=.05
+</br>$\alpha$ < p
+</br>Fail to Reject $H_0$
+</br>The result of this test means that the predictor EXPER is not related to the response variable TIME, and should be removed from the model.
+```{r}
+fit41b<-lm(TIME~NUMBER)
+summary(fit41b)
+plot(NUMBER~TIME)
+abline(fit41b)
+```
+</br>It looks like the line is curved, I'll check the diagnostic plots
+```{r}
+par(mfrow=c(2,2))
+plot(fit41b)
+```
+</br>Clearly this equation needs to be transformed in order to be corrected and made linear.
+```{r}
+fit41po<-lm(TIME~I(NUMBER-mean(NUMBER))+I((NUMBER-mean(NUMBER))^2))
+summary(fit41po)
+vif(fit41po)
+```
+</br>Looking at the p-values and vif of the new equation it seems the issues are fixed.
+</br>Final Equation: TIME=360.44561+33.37821(NUMBER-mean(NUMBER))+.94393((NUMBER-mean(NUMBER))^2)
+
+##Problem 7.2
+```{r}
+library(readxl)
+hw42<-read_excel("C:/Users/SEATT_000/Documents/UMD Classes/Spring 2020/BMGT430/Homework/HW 4/COLLEGE7.xlsx", col_names = TRUE)
+attach(hw42)
+fit42<-lm(GRADRATE4~ADMISRATE+PRIVATE)
+summary(fit42)
+```
+</br>a) $H{_0}:\beta{_1}=\beta{_2}=0$ </br>
+$H{_1}$: At least one of the $\beta$s is not equal to 0 </br></br>
+```{r}
+anova(fit42)
+```
+</br> Test Statistic: $F_{2:192}$=182.3
+```{r}
+1-pf(182.3,2,192)
+```
+</br> p=2.2e-16
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>b) The result of this test means that at least one predictor is significant in explaining the response, so the regression line is a good fit for the data.
+</br>c) $H{_0}$:PRIVATE$(\beta_2)$=0 </br>
+$H{_1}$: PRIVATE$(\beta_2)$s is not equal to 0 </br></br>
+```{r}
+anova(fit42)
+```
+</br> Test Statistic: $F_{1:192}$=138.11
+```{r}
+1-pf(138.11,1,192)
+```
+</br> p=0
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>The result of this test means that PRIVATE is linearly related to GRADRATE4, and is a relevant predictor. This means that there is a difference in Graduation Rate between public and private schools on average.
+</br>d) Private School with 15% acceptance
+</br>GRADRATE4=.58944-.35044(.15)+.28196(1)
+</br>.58944-.05257+.28196=<b>.81883</b>
+</br>Public School with 15% acceptance
+</br>GRADRATE4=.58944-.35044(.15)+.28196(0)
+</br>.58944-.05257=<b>.53687</b>
+
+##Problem 7.4
+```{r}
+fit43<-lm(GRADRATE4~ADMISRATE+PRIVATE+ADMISRATE:PRIVATE)
+```
+</br>a) $H{_0}:\beta_2$=0 </br>
+$H{_1}:\beta_2$ is not equal to 0 </br></br>
+```{r}
+anova(fit42)
+```
+</br> Test Statistic: $F_{1:191}$=138.0805
+```{r}
+1-pf(138.0805,1,191)
+```
+</br> p=0
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>The result of this test means that PRIVATE is a significant predictor of GRADRATE4. This shows that it is different regression line than for public schools, which does not include the predictor PRIVATE.
+</br>b) $H{_0}:\beta{_2}=\beta{_3}=0$ </br>
+$H{_1}$: $\beta{_2}$ or $\beta{_3}$ is not equal to 0 </br></br>
+```{r}
+fit43r<-lm(GRADRATE4~ADMISRATE)
+anova(fit43,fit43r)
+```
+</br> Test Statistic: $F_{191:193}$=69.52
+```{r}
+1-pf(69.52,191,193)
+```
+</br> p=2.2e-16
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>The result of this test means that the original model is indeed valid, so there is a difference in Graduation rates between public and private schools.
+</br>c) $H{_0}:\beta_3$=0 </br>
+$H{_1}:\beta_3$ is not equal to 0 </br></br>
+```{r}
+summary(fit43)
+```
+</br> Test Statistic: $T$=.979
+</br> p=.32876
+</br>$\alpha$=.05
+</br>$\alpha$ < p
+</br>Fail to Reject $H_0$
+</br>$\beta_3$ is not significantly different from 0, so the slopes of the regression lines of both public and private schools are at most insignificantly different.
+
+##Problem 7.6
+```{r}
+library(readxl)
+hw44<-read_excel("C:/Users/SEATT_000/Documents/UMD Classes/Spring 2020/BMGT430/Homework/HW 4/ABSENT7.xlsx", col_names = TRUE)
+attach(hw44)
+SENINV=1/SENIOR
+fit44<-lm(ABSENT~SENINV+COMPLX+factor(SATIS))
+summary(fit44)
+```
+</br>a) $H{_0}:\beta{_3}=\beta{_4}=\beta{_5}=\beta{_6}=0$ </br>
+$H{_1}$: At least one of the $\beta$s is not equal to 0 </br></br>
+```{r}
+fit44r<-lm(ABSENT~SENINV+COMPLX)
+anova(fit44,fit44r)
+```
+</br> Test Statistic: $F_{70:74}$=3.4538
+</br> p=.01238
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>Supervisor satisfaction is a significant factor in absenteeism, meaing there is a difference.
+</br>b) Model: ABSENT=2.534709+1.102841SENINV-.014070COMPLEX+.700092SATIS2-.493028SATIS3-.834578SATIS4-.904105SATIS5
+</br>2.534709+1.102841(1/30)-.014070(60)+.700092(0)-.493028(0)-.834578(0)-.904105(0)
+</br>2.534709+.03676-.84420
+</br>ABSENT=<b>1.72727</b>
+</br>2.534709+1.102841(1/30)-.014070(60)+.700092(0)-.493028(0)-.834578(0)-.904105(1)
+</br>2.534709+.03676-.84420-.904105
+</br>ABSENT=<b>.82316</b>
+</br>c) The differences in the estimates come about from supervisor satisfaction having an effect on ABSENT. One of the binary variables are active depending on the rated satisfaction, and since each has a different coefficient the number of absences changes even when SENIOR and COMPLX remain the same.

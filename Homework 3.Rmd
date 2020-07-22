@@ -1,0 +1,180 @@
+---
+title: "Homework 3"
+author: "Anders Julin"
+date: "4/6/2020"
+output: html_document
+---
+
+##Problem 4.2
+```{r}
+library(readxl)
+hw31<-read_excel("C:/Users/SEATT_000/Documents/UMD Classes/Spring 2020/BMGT430/Homework/HW 3/HARRIS4.xlsx", col_names = TRUE)
+attach(hw31)
+fit31<-lm(hw31)
+summary(fit31)
+```
+</br> a) $SALARY=3179.5+139.6EDUC+1.5EXPER+20.6TIME$
+</br> b) $H{_0}:\beta{_1}=\beta{_2}=\beta{_3}=0$ </br>
+$H{_1}$: At least one of the $\beta$s is not equal to 0 </br></br>
+```{r}
+anova(fit31)
+```
+</br> Test Statistic: $F_{3:89}$=12.84
+```{r}
+1-pf(12.84,3,89)
+```
+</br> p=4.792716e-07
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>The result of this test means that at least one predictor is significant in explaining the response, so the regression line is a good fit for the data.
+</br> c) $H{_0}$:Education$(\beta_1)$=0 </br>
+$H{_1}$: Education$(\beta_1)$s is not equal to 0 </br></br>
+```{r}
+anova(fit31)
+```
+</br> Test Statistic: $F_{1:89}$=21.643
+```{r}
+1-pf(21.643,1,89)
+```
+</br> p=1.136961e-05
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>The result of this test means that education is linearly related to beginning salary.
+</br> d)
+```{r}
+summary(fit31)
+```
+Based on the R-Squared value, 30.2% of the variation in beginning salary is explained by the regression.
+
+##Problem 4.4
+```{r}
+fit32R<-lm(SALARY~EDUC)
+anova(fit31)
+anova(fit32R)
+```
+</br>$H_0:\beta_2=\beta_3=0$
+</br>$H_1:$at least one of these $\beta$s is not 0
+</br> Test Statistic: $F_{2:89}=(({SSE_R-SSE_F})/({df_R-df_F}))/({SSE_F/df_F})$ </br>
+$F_{2:89}=$((38460756-32332043)/(91-89))/(32332043/89) </br> 
+$F_{2:89}$=8.43521
+```{r}
+1-pf(8.43521,2,89)
+```
+</br>p-value=.000441961
+</br>$\alpha$=.05
+</br>$\alpha$>p-value, therefore we reject $H_0$
+</br> This means that we cannot use the reduced model as at least one of these predictors is significant in explaining the response.
+
+##Problem 4.8
+```{r}
+library(readxl)
+hw38<-read_excel("C:/Users/SEATT_000/Documents/UMD Classes/Spring 2020/BMGT430/Homework/HW 3/WHEAT4.xlsx", col_names = TRUE)
+attach(hw38)
+fit38<-lm(hw38)
+summary(fit38)
+```
+</br>a) Regression Equation: SHIPMENT=3361.932+1.869EXCHRATE-2413.837PRICE
+</br> b) $H{_0}:\beta{_1}=\beta{_2}=0$ </br>
+$H{_1}$: At least one of the $\beta$s is not equal to 0 </br></br>
+```{r}
+anova(fit38)
+```
+</br> Test Statistic: $F_{2:132}$=6.369
+```{r}
+1-pf(6.369,2,132)
+```
+</br> p-value=0.002287863
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>The result of this test means that at least one predictor is significant in explaining the response, so the regression line is a good fit for the data.
+</br> c) $H{_0}$:EXCHRATE$(\beta_1)$=0 </br>
+$H{_1}$: EXCHRATE$(\beta_1)$s is not equal to 0 </br></br>
+```{r}
+anova(fit38)
+```
+</br> Test Statistic: $F_{1:132}$=4.6070
+```{r}
+1-pf(4.6070,1,132)
+```
+</br> p-value=.03367054
+</br>$\alpha$=.05
+</br>$\alpha$ > p
+</br>Reject $H_0$
+</br>The result of this test means that EXCHRATE is linearly related to SHIPMENT.
+</br> d)
+```{r}
+summary(fit38)
+```
+8.801% of the variation in SHIPMENT is explained by the regression.
+</br> e) 
+```{r}
+summary(fit38)
+```
+</br>CI=-2413.837+-$t_{n-2}$*SE(-2413.837)
+</br>CI=-2413.837+-(-1.959964*72.85340)
+</br>CI=-2413.837+-(-142.79004)
+</br>CI=(-2556.62704,-2271.04696)
+</br> f)
+```{r}
+summary(fit38)
+```
+The value of adjusted r-squared is .0741. Both R-Squared and Adjusted R-Squared explain the variation in the response caused by the regression, but the advantage of Adjusted R-Squared is that it is adjusted for the number of predictors in the model. Just because there are more predictors does not mean the model is better. This is important for multiple linear regression.
+
+##Problem 4.10
+```{r}
+library(readxl)
+hw310<-read_excel("C:/Users/SEATT_000/Documents/UMD Classes/Spring 2020/BMGT430/Homework/HW 3/DIV4.xlsx", col_names = TRUE)
+attach(hw310)
+fit310<-lm(DIVYIELD~EPS+PRICE)
+summary(fit310)
+```
+</br> a) DIVYIELD=2.45022+.060407EPS-.02931PRICE
+</br> b) 8.73% of the variation in DIVYIELD is explained by the regression.
+</br> c) $H_0:\beta_1=\beta_2=0$
+</br> $H_1$: at least one of the $\beta$s is not equal to 0
+```{r}
+anova(fit310)
+```
+</br> Test Statistic: $F_{2:39}$=1.865
+```{r}
+1-pf(1.865,2,39)
+```
+</br> p-value=0.168449
+</br>$\alpha$=.05
+</br>$\alpha$ < p
+</br>Fail to reject $H_0$
+</br>
+d) From this result we can say that the predictors EPS and PRICE are not linearly related to the response DIVYIELD.
+</br> e) No, you do not need to test each varible individually. We failed to reject the null hypothesis that tested whether the predictors were related to the response. Testing each variable independently significantly increases the likelihood of making a type I error.</br>
+
+##Problem 4.12
+```{r}
+library(readxl)
+hw314<-read_excel("C:/Users/SEATT_000/Documents/UMD Classes/Spring 2020/BMGT430/Homework/HW 3/COLLEGE4.xlsx", col_names = TRUE)
+attach(hw314)
+fit314<-lm(GRADRATE4~ADMISRATE+SFACRATIO+AVGDEBT)
+summary(fit314)
+```
+Initial Equation: GRADRATE4=1.11-.3798ADMISRATE-.02789SFACRATIO+.0000005169AVGDEBT
+</br> Looking at the p-value for the overall equation it looks like there is in fact a linear relationship. However AVGDEBT as a predictor has a very high p-value. I'm going to try and fit a reduced model without AVGDEBT and see it is a better model for GRADRATE4
+```{r}
+fit314R<-lm(GRADRATE4~ADMISRATE+SFACRATIO)
+```
+</br> $H_0:AVGDEBT(\beta_3)=0$
+</br> $H_1:AVGDEBT(\beta_3)$ is not equal to 0
+```{r}
+anova(fit314,fit314R)
+```
+F=.0464
+</br>p-value=.8296
+</br>$\alpha$=.05
+</br>p-value > $\alpha$, therefore we fail to reject $H_0$
+</br>By failing to reject that that coefficient of AVGDEBT is 0 we can keep it out of the model. This means the better model is the reduced one without AVGDEBT.
+</br></br>
+```{r}
+summary(fit314R)
+```
+FINAL EQUATION: GRADRATE4=1.116904-.378478ADMISRATE-.027897SFACRATIO
